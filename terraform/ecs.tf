@@ -31,18 +31,18 @@ resource "aws_ecs_service" "main" {
   desired_count   = "${var.app_count}"
   launch_type     = "FARGATE"
 
-  # health_check_grace_period_seconds = 7200
-
   network_configuration {
     security_groups  = ["${aws_security_group.ecs_tasks.id}"]
     subnets          = ["${aws_subnet.private.*.id}"]
     assign_public_ip = true
   }
+
   load_balancer {
     target_group_arn = "${aws_alb_target_group.app.id}"
     container_name   = "ob-app"
     container_port   = "${var.app_port}"
   }
+
   depends_on = [
     "aws_alb_listener.front_end",
   ]
